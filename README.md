@@ -1,4 +1,11 @@
-# Vite & NextUI Template
+# ETF - Rechner
+
+## Used Libraries
+
+- [NextUI](https://nextui.org/) with React and TS
+- [Nivo Charts](https://nivo.rocks/)
+
+## Vite & NextUI Template
 
 This is a template for creating applications using Vite and NextUI (v2).
 
