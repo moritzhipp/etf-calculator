@@ -1,9 +1,5 @@
 import { getDateInXMonths } from "./utils-general";
 
-export type Options = {
-  inflation: number;
-};
-
 export type ChartDataOptions = {
   zins: number;
   steuerfreibetrag: number;
@@ -15,120 +11,90 @@ export type ChartDataOptions = {
 };
 
 export type ChartData = {
+  data: ChartSlice[];
+  summary: ChartSummary;
+};
+
+export type ChartSummary = {
+  ansparen: ChartSlice;
+  auszahlen?: ChartSlice;
+};
+
+export type ChartSlice = {
   date: string;
   einzahlungSum?: number;
   auszahlungSum?: number;
-  renditeSum: number;
+  renditeSum?: number;
   rendite: number;
   sum: number;
 };
 
-export function calculateChartData(input: ChartDataOptions): ChartData[] {
+export function calculateChartData(input: ChartDataOptions): ChartData {
   const { dauerEinz, rateEinz, dauerAusz, rateAusz, einmalbeitrag, zins } =
     input;
 
-  console.log(input);
   let chartData = [];
 
-  const percentagePerMonth = zins / 12;
-  const dauerInMonths = (dauerEinz + dauerAusz) * 12;
-
-  const isEinzahlung = (month: number) => month < input.dauerEinz * 12;
+  const percentagePerMonth = zins / 12 / 100;
+  const dauerAuszInMonths = dauerAusz * 12;
+  const dauerEinzInMonths = dauerEinz * 12;
 
   let currentEinzahlungenSum = einmalbeitrag + rateEinz;
-  let currentAuszahlungSum = 0;
   let currentSum = currentEinzahlungenSum;
   let currentRenditeSum = 0;
   let rendite = 0;
 
-  for (let i = 0; i < dauerInMonths; i++) {
-    if (currentSum < rateAusz) break;
+  // einzahlung
+  chartData.push({
+    date: getDateInXMonths(0),
+    einzahlungSum: currentEinzahlungenSum,
+    renditeSum: currentRenditeSum,
+    rendite,
+    sum: currentSum,
+  });
+
+  for (let i = 0; i < dauerEinzInMonths; i++) {
+    rendite = currentSum * percentagePerMonth;
+    currentRenditeSum += rendite;
+    currentEinzahlungenSum += rateEinz;
+    currentSum = currentSum + rendite + rateEinz;
 
     chartData.push({
-      date: getDateInXMonths(i),
+      date: getDateInXMonths(i + 1),
       einzahlungSum: currentEinzahlungenSum,
-      auszahlungSum: currentAuszahlungSum,
       renditeSum: currentRenditeSum,
       rendite,
       sum: currentSum,
     });
-
-    rendite = currentSum * (percentagePerMonth / 100);
-    currentRenditeSum += rendite;
-
-    if (isEinzahlung(i)) {
-      currentEinzahlungenSum += rateEinz;
-      currentSum = currentSum + rendite + rateEinz;
-    } else {
-      currentEinzahlungenSum = null;
-      currentSum = currentSum + rendite;
-      currentSum = currentSum - rateAusz;
-      currentAuszahlungSum += rateAusz;
-    }
   }
 
-  return chartData;
-}
+  const summaryEinz = chartData.slice(-1)[0];
 
-// Jahr 0 ist Jetzt
-export function calculateChartDataEinz(input: ChartDataOptions): ChartData[] {
-  const { dauerEinz, rateEinz, einmalbeitrag, zins } = input;
-  console.log(input);
-
-  const percentagePerMonth = zins / 12;
-  const dauerInMonths = dauerEinz * 12;
-
-  let chartData: ChartData[] = [];
-  let currentEinzahlungenSum = einmalbeitrag + rateEinz;
-  let currentSum = currentEinzahlungenSum;
-  let currentRenditeSum = 0;
-
-  for (let i = 0; i < dauerInMonths; i++) {
-    chartData.push({
-      date: getDateInXMonths(i),
-      einzahlungSum: currentEinzahlungenSum,
-      renditeSum: currentRenditeSum,
-      sum: currentSum,
-    });
-
-    let rendite = currentSum * (percentagePerMonth / 100);
-    currentRenditeSum += rendite;
-    currentEinzahlungenSum += rateEinz;
-    currentSum += rendite + rateEinz;
-  }
-
-  return chartData;
-}
-
-export function calculateAuszahlplan(
-  input: ChartDataOptions,
-  start: number
-): ChartData[] {
-  const { dauerAusz, zins, rateAusz, einmalbeitrag } = input;
-
-  const dauerInMonths = dauerAusz * 12;
-  const percentagePerMonth = zins / 12;
-
-  let chartData: ChartData[] = [];
+  // auszahlung
   let currentAuszahlungSum = 0;
-  let currentSum = einmalbeitrag;
-  let currentRenditeSum = 0;
 
-  for (let i = 0; i < dauerInMonths; i++) {
-    if (currentSum < 0) break;
+  for (let i = 0; i < dauerAuszInMonths; i++) {
+    rendite = currentSum * percentagePerMonth;
+    currentRenditeSum += rendite;
+    currentSum = currentSum + rendite - rateAusz;
+    currentAuszahlungSum += rateAusz;
 
     chartData.push({
-      date: getDateInXMonths(start + i),
-      renditeSum: currentRenditeSum,
+      date: getDateInXMonths(dauerEinzInMonths + i),
+      auszahlungSum: currentAuszahlungSum,
+      rendite,
       sum: currentSum,
-      auszahlungSum: rateAusz,
     });
-
-    let rendite = currentSum * (percentagePerMonth / 100);
-    currentRenditeSum += rendite;
-    currentAuszahlungSum -= rateAusz;
-    currentSum += rendite - rateAusz;
   }
 
-  return chartData;
+  let summaryAusz;
+
+  if (dauerAusz) {
+    summaryAusz = chartData.slice(-1)[0];
+  }
+
+  return {
+    data: chartData,
+    summary: { ansparen: summaryEinz, auszahlen: summaryAusz },
+  };
 }

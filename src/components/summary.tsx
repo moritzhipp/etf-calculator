@@ -1,32 +1,57 @@
-import { ChartData, ChartDataOptions } from "@/utils-calculations";
-import { formatEuro } from "@/utils-general";
+import { formatEuro, getDateInXYearsAndMonths } from "@/utils-general";
+import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+import { Divider } from "@nextui-org/divider";
 
-export const Summary = ({
-  data,
-  options,
-}: {
-  data: ChartData[];
-  options: ChartDataOptions;
-}) => {
-  const {
-    sum,
-    renditeSum: rendite,
-    einzahlungSum: einzahlung,
-    date: jahr,
-  } = data.slice(-1)[0];
-  const { rateAusz: rate, zins } = options;
+export const Summary = (props) => {
+  const { summary, options } = props;
+  const { rateAusz, rateEinz, zins, einmalbeitrag, dauerAusz } = options;
+
   return (
-    <div className="p-4">
-      <h1>Zusammenfassung</h1>
-      <p>
-        Wenn du jetzt anfängst, monatlich {formatEuro(rate)} in deinen ETF zu
-        investieren, der durchscnittlich jährlich um {zins}% wächst hättest du
-        bis {jahr} insgesamt <b>{formatEuro(einzahlung)}</b> aufgewendet und
-        damit zusätzliche <b>{formatEuro(rendite)}</b> Rendite Erwirtschaftet.
-      </p>
-      <p>
-        Im Jahr {jahr} hättest du folglich <b>{formatEuro(sum)}</b> angespart.
-      </p>
+    <div className="grid grid-cols-2 gap-4 p-4">
+      <Card>
+        <CardHeader>
+          <h1 className="font-bold">Ansparen</h1>
+          <div className="ml-auto">
+            {getDateInXYearsAndMonths(0)}-
+            {getDateInXYearsAndMonths(options.dauerEinz)}
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <div>Rechnungszins: {zins}%</div>
+          <div>Einmalbeitrag: {formatEuro(einmalbeitrag)}</div>
+          <div>Sparrate monatlich: {formatEuro(rateEinz)}</div>
+          <div>
+            Einzahlung gesamt: {formatEuro(summary.ansparen.einzahlungSum)}
+          </div>
+          <div>Rendite gesamt: {formatEuro(summary.ansparen.renditeSum)}</div>
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          <span>Summe</span>
+          <span className="ml-auto">{formatEuro(summary.ansparen.sum)}</span>
+        </CardFooter>
+      </Card>
+      {dauerAusz && (
+        <Card>
+          <CardHeader>
+            <h1 className="font-bold">Auszahlen</h1>
+            <div className="ml-auto">
+              {getDateInXYearsAndMonths(0)}-
+              {getDateInXYearsAndMonths(options.dauerEinz)}
+            </div>
+          </CardHeader>
+          <Divider />
+          <CardBody>
+            <div>Zins: {zins}%</div>
+          </CardBody>
+          <Divider />
+          <CardFooter>
+            <span>Rente monatlich</span>
+            <span className="ml-auto">{formatEuro(options.rateAusz)}</span>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 };

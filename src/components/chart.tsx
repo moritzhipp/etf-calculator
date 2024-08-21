@@ -1,63 +1,70 @@
-import { ChartData } from "@/utils-calculations";
+import { ChartSlice } from "@/utils-calculations";
 import { formatEuro } from "@/utils-general";
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-export const Chart = ({ data }: { data: ChartData[] }) => {
+export const Chart = ({ data }: { data: ChartSlice[] }) => {
   return (
     <ResponsiveContainer width="100%" height={700} className="p-2">
-      <LineChart data={data}>
+      <AreaChart data={data}>
         <XAxis dataKey="date" />
         <YAxis />
         <Tooltip animationDuration={1500} content={<CustomTooltip />} />
         <CartesianGrid vertical={false} stroke="#444" strokeDasharray="2 10" />
-        <Line
+
+        <Area
+          stackId="1"
           strokeWidth={1}
           type="monotone"
           dataKey="einzahlungSum"
           stroke="#00f"
-          fill="transparent"
+          dot={false}
         />
-        <Line
-          strokeWidth={2}
+        <Area
+          stackId="1"
+          strokeWidth={1}
           type="monotone"
           dataKey="renditeSum"
           stroke="#0f0"
-          fill="transparent"
+          dot={false}
         />
-        <Line
+
+        <Area
           strokeWidth={3}
-          type="monotone"
-          dataKey="auszahlungSum"
-          stroke="#f00"
-          fill="transparent"
-        />
-        <Line
-          strokeWidth={4}
           type="monotone"
           dataKey="sum"
           stroke="#8884d8"
           fill="transparent"
+          dot={false}
+        />
+        <Area
+          strokeWidth={1}
+          type="monotone"
+          dataKey="auszahlungSum"
+          stroke="#f00"
+          fill="#f00"
+          dot={false}
         />
         <Legend />
-      </LineChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-const TooltipAuszahlung = ({ auszahlungSum, sum, rendite }) => {
+const TooltipAuszahlung = (props) => {
+  const { auszahlungSum, sum, rendite, date } = props;
   return (
     <div className="grid grid-rows-2 gap-y-1 border-1 p-3 border-gray-600 backdrop-blur-md rounded-md shadow-md">
       <p className="col-span-2">
-        <b>Hi Aus</b>
+        <b>{date}</b>
       </p>
       <div>Ausgezalt</div>
       <div className="text-right">{formatEuro(auszahlungSum)} </div>
@@ -71,11 +78,12 @@ const TooltipAuszahlung = ({ auszahlungSum, sum, rendite }) => {
   );
 };
 
-const TooltipEnzahlung = ({ einzahlungSum, sum, renditeSum }) => {
+const TooltipEnzahlung = (props) => {
+  const { einzahlungSum, sum, renditeSum, date } = props;
   return (
     <div className="grid grid-rows-2 gap-y-1 border-1 p-3 border-gray-600 backdrop-blur-md rounded-md shadow-md">
       <p className="col-span-2">
-        <b>Hi Ein</b>
+        <b>{date}</b>
       </p>
       <div>Eingezahlt</div>
       <div className="text-right">{formatEuro(einzahlungSum)} </div>
@@ -90,7 +98,7 @@ const TooltipEnzahlung = ({ einzahlungSum, sum, renditeSum }) => {
 };
 
 const CustomTooltip = (props) => {
-  const { active, payload, label } = props;
+  const { active, payload } = props;
 
   if (active && payload && payload.length) {
     const props = payload[0].payload;

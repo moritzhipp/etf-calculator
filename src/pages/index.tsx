@@ -26,8 +26,8 @@ export default function IndexPage() {
   return (
     <div>
       <Options options={options} onChange={updateOptions} />
-      <Chart data={data} />
-      <Summary data={data} options={options} />
+      <Chart data={data.data} />
+      <Summary summary={data.summary} options={options} />
     </div>
   );
 }
