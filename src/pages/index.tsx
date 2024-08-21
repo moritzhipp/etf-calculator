@@ -7,9 +7,12 @@ import { useState } from "react";
 export default function IndexPage() {
   const [options, setOptions] = useState<ChartDataOptions>({
     einmalbeitrag: 1000,
-    dauer: 25,
+    dauerEinz: 25,
+    rateEinz: 100,
+    rateAusz: 150,
+    dauerAusz: 0,
     zins: 7.3,
-    rate: 150,
+    steuerfreibetrag: 1000,
   });
   const data = calculateChartData(options);
 

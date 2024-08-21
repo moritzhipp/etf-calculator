@@ -14,7 +14,7 @@ export const Summary = ({
     einzahlungSum: einzahlung,
     date: jahr,
   } = data.slice(-1)[0];
-  const { rate, zins } = options;
+  const { rateAusz: rate, zins } = options;
   return (
     <div className="p-4">
       <h1>Zusammenfassung</h1>
