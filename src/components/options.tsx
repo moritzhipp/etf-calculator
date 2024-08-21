@@ -2,7 +2,7 @@ import { Input } from "@nextui-org/input";
 
 export const Options = ({ onChange, options }) => {
   const handleFormChange = (e) => {
-    onChange({ [e.target.id]: e.target.value });
+    onChange({ [e.target.id]: Number(e.target.value) });
   };
 
   return (
@@ -25,7 +25,7 @@ export const Options = ({ onChange, options }) => {
         type="number"
         value={options.dauer}
         label="Anlagedauer"
-        min={0}
+        min="0"
         id="dauer"
       />
       <Input

@@ -1,4 +1,5 @@
-import { ChartData, ChartDataOptions, formatEuro } from "@/utils-general";
+import { ChartData, ChartDataOptions } from "@/utils-calculations";
+import { formatEuro } from "@/utils-general";
 
 export const Summary = ({
   data,
@@ -7,7 +8,12 @@ export const Summary = ({
   data: ChartData[];
   options: ChartDataOptions;
 }) => {
-  const { sum, rendite, einzahlung, jahr } = data.slice(-1)[0];
+  const {
+    sum,
+    renditeSum: rendite,
+    einzahlungSum: einzahlung,
+    date: jahr,
+  } = data.slice(-1)[0];
   const { rate, zins } = options;
   return (
     <div className="p-4">
