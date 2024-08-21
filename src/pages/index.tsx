@@ -1,7 +1,7 @@
 import { Chart } from "@/components/chart";
 import { Options } from "@/components/options";
 import { Summary } from "@/components/summary";
-import { ChartDataOptions, calculateChartData } from "@/utils-calculations";
+import { calculateChartData, ChartDataOptions } from "@/utils-calculations";
 import { useState } from "react";
 
 export default function IndexPage() {

@@ -38,17 +38,17 @@ export const Options = ({ onChange, options }) => {
           <div className="grid grid-cols-3 gap-3">
             <Input
               type="number"
-              value={options.dauerAusz}
+              value={options.rateAusz}
               label="Rate Auszahlung"
-              min="0"
-              id="dauerAusz"
+              min="1"
+              id="rateAusz"
             />
             <Input
               type="number"
-              value={options.rateAusz}
+              value={options.dauerAusz}
               label="Dauer Auszahlung"
               min="0"
-              id="rateAusz"
+              id="dauerAusz"
             />
           </div>
         </Tab>
