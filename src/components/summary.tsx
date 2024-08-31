@@ -1,4 +1,4 @@
-import { formatEuro, getDateInXYearsAndMonths } from "@/utils-general";
+import { formatEuro, getDateInXYears } from "@/utils-general";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 
@@ -12,8 +12,7 @@ export const Summary = (props) => {
         <CardHeader>
           <h1 className="font-bold">Ansparen</h1>
           <div className="ml-auto">
-            {getDateInXYearsAndMonths(0)}-
-            {getDateInXYearsAndMonths(options.dauerEinz)}
+            {getDateInXYears(0)}-{getDateInXYears(options.dauerEinz)}
           </div>
         </CardHeader>
         <Divider />
@@ -37,8 +36,7 @@ export const Summary = (props) => {
           <CardHeader>
             <h1 className="font-bold">Auszahlen</h1>
             <div className="ml-auto">
-              {getDateInXYearsAndMonths(0)}-
-              {getDateInXYearsAndMonths(options.dauerEinz)}
+              {getDateInXYears(0)}-{getDateInXYears(options.dauerEinz)}
             </div>
           </CardHeader>
           <Divider />

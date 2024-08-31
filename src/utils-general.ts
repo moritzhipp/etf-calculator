@@ -1,16 +1,9 @@
-export function getDateInXYearsAndMonths(
-  yearsInFuture: number,
-  monthsInFuture: number = 0
-): string {
+export function getDateInXYears(yearsInFuture: number): string {
   const currentDate = new Date();
-
   const futureYear = currentDate.getFullYear() + yearsInFuture;
-  const futureMonth = currentDate.getMonth() + monthsInFuture;
-
   const futureDate = new Date(currentDate.setFullYear(futureYear));
-  futureDate.setMonth(futureMonth);
 
-  return futureDate.toDateString();
+  return futureDate.getFullYear().toString();
 }
 
 export function getDateInXMonths(monthsInFuture: number): string {

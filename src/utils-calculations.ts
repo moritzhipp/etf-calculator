@@ -1,66 +1,80 @@
-import { getDateInXMonths } from "./utils-general";
+import { getDateInXYears } from "./utils-general";
 
-export type ChartDataOptions = {
+export type ChartOptions = {
   zins: number;
-  steuerfreibetrag: number;
+  einzahlen: ChartEinzOptions;
+  auszahlen: ChartAuszOptions;
+};
+
+export type ChartEinzOptions = {
   einmalbeitrag: number;
-  dauerEinz: number;
-  dauerAusz: number;
-  rateAusz: number;
-  rateEinz: number;
+  dauer: number;
+  rate: number;
+};
+
+export type ChartAuszOptions = ChartEinzOptions & {
+  steuerfreibetrag: number;
+  startYearsInFuture: number;
 };
 
 export type ChartData = {
-  data: ChartSlice[];
+  data: ChartEinzSlice[];
   summary: ChartSummary;
 };
 
 export type ChartSummary = {
-  ansparen: ChartSlice;
-  auszahlen?: ChartSlice;
+  ansparen: ChartEinzSlice;
+  auszahlen?: ChartEinzSlice;
 };
 
-export type ChartSlice = {
+export type ChartEinzSlice = {
   date: string;
   einzahlungSum?: number;
-  auszahlungSum?: number;
   renditeSum?: number;
   rendite: number;
   sum: number;
 };
 
-export function calculateChartData(input: ChartDataOptions): ChartData {
-  const { dauerEinz, rateEinz, dauerAusz, rateAusz, einmalbeitrag, zins } =
-    input;
+export type ChartAuszSlice = {
+  date: string;
+  auszahlung: number;
+  rendite: number;
+  sum: number;
+};
+
+export function calculateAnsparplan(
+  input: ChartEinzOptions,
+  zins: number
+): ChartEinzSlice[] {
+  const { dauer, rate, einmalbeitrag } = input;
 
   let chartData = [];
 
-  const percentagePerMonth = zins / 12 / 100;
-  const dauerAuszInMonths = dauerAusz * 12;
-  const dauerEinzInMonths = dauerEinz * 12;
+  const percentagePerMonth = zins / 100;
 
-  let currentEinzahlungenSum = einmalbeitrag + rateEinz;
+  let rateYearly = rate * 12;
+  let currentEinzahlungenSum = einmalbeitrag + rateYearly;
   let currentSum = currentEinzahlungenSum;
   let currentRenditeSum = 0;
   let rendite = 0;
 
   // einzahlung
   chartData.push({
-    date: getDateInXMonths(0),
+    date: getDateInXYears(0),
     einzahlungSum: currentEinzahlungenSum,
     renditeSum: currentRenditeSum,
     rendite,
     sum: currentSum,
   });
 
-  for (let i = 0; i < dauerEinzInMonths; i++) {
+  for (let i = 0; i < dauer - 1; i++) {
     rendite = currentSum * percentagePerMonth;
     currentRenditeSum += rendite;
-    currentEinzahlungenSum += rateEinz;
-    currentSum = currentSum + rendite + rateEinz;
+    currentEinzahlungenSum += rateYearly;
+    currentSum = currentSum + rendite + rateYearly;
 
     chartData.push({
-      date: getDateInXMonths(i + 1),
+      date: getDateInXYears(i + 1),
       einzahlungSum: currentEinzahlungenSum,
       renditeSum: currentRenditeSum,
       rendite,
@@ -68,33 +82,36 @@ export function calculateChartData(input: ChartDataOptions): ChartData {
     });
   }
 
-  const summaryEinz = chartData.slice(-1)[0];
+  return chartData;
+}
 
-  // auszahlung
-  let currentAuszahlungSum = 0;
+export function calculatAuszahlplan(
+  input: ChartAuszOptions,
+  zins: number
+): ChartAuszSlice[] {
+  const { dauer, rate, steuerfreibetrag, einmalbeitrag, startYearsInFuture } =
+    input;
 
-  for (let i = 0; i < dauerAuszInMonths; i++) {
-    rendite = currentSum * percentagePerMonth;
-    currentRenditeSum += rendite;
-    currentSum = currentSum + rendite - rateAusz;
-    currentAuszahlungSum += rateAusz;
+  let chartData = [];
+
+  const percentage = zins / 100;
+
+  let currentSum = einmalbeitrag + rate;
+  let rateYearly = rate * 12;
+
+  let rendite = 0;
+
+  for (let i = 0; i < dauer; i++) {
+    rendite = currentSum * percentage;
+    currentSum = currentSum + rendite - rateYearly;
 
     chartData.push({
-      date: getDateInXMonths(dauerEinzInMonths + i),
-      auszahlungSum: currentAuszahlungSum,
+      date: getDateInXYears(i + startYearsInFuture),
+      auszahlung: rateYearly,
       rendite,
       sum: currentSum,
     });
   }
 
-  let summaryAusz;
-
-  if (dauerAusz) {
-    summaryAusz = chartData.slice(-1)[0];
-  }
-
-  return {
-    data: chartData,
-    summary: { ansparen: summaryEinz, auszahlen: summaryAusz },
-  };
+  return chartData;
 }

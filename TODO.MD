@@ -6,3 +6,4 @@
 - die ganzen type conversion von number zu string und back
 - smarter auszahlplan toggle (passt auszahlrate automatisch an zinsgewinne an)
 - statt datumslabels eigenes alter
+- bei berechnungsgrundlagen alter und todesalter angeben?

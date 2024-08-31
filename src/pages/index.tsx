@@ -1,33 +1,55 @@
-import { Chart } from "@/components/chart";
-import { Options } from "@/components/options";
-import { Summary } from "@/components/summary";
-import { calculateChartData, ChartDataOptions } from "@/utils-calculations";
+import { ChartAnsparen } from "@/components/charts/chart-ansparen";
+import { ChartAuszahlen } from "@/components/charts/chart-auszahlen";
+import { Options } from "@/components/options/options";
+import {
+  calculatAuszahlplan,
+  calculateAnsparplan,
+  ChartAuszSlice,
+  ChartOptions,
+} from "@/utils-calculations";
 import { useState } from "react";
 
-export default function IndexPage() {
-  const [options, setOptions] = useState<ChartDataOptions>({
+const optionsDefault: ChartOptions = {
+  zins: 7.3,
+  einzahlen: {
     einmalbeitrag: 1000,
-    dauerEinz: 25,
-    rateEinz: 100,
-    rateAusz: 150,
-    dauerAusz: 0,
-    zins: 7.3,
+    dauer: 10,
+    rate: 100,
+  },
+  auszahlen: {
+    einmalbeitrag: 100000,
+    rate: 100,
+    dauer: 10,
     steuerfreibetrag: 1000,
-  });
-  const data = calculateChartData(options);
+    startYearsInFuture: 10,
+  },
+};
 
-  const updateOptions = (newOptions: Partial<ChartDataOptions>) => {
-    setOptions((prevOptions: ChartDataOptions) => ({
-      ...prevOptions,
-      ...newOptions,
-    }));
-  };
+export default function IndexPage() {
+  const [options, setOptions] = useState<ChartOptions>(optionsDefault);
+  const dataEinzahlen = calculateAnsparplan(options.einzahlen, options.zins);
+
+  let dataAuszahlen: ChartAuszSlice[] = [];
+
+  // hier an option 'auszahlplan generieren' orientieren
+  if (dataEinzahlen?.length > 0) {
+    const lastSum = dataEinzahlen[dataEinzahlen.length - 1].sum;
+    const newOptions = {
+      ...options.auszahlen,
+      startYearsInFuture: options.einzahlen.dauer,
+      einmalbeitrag: lastSum,
+    };
+    dataAuszahlen = calculatAuszahlplan(newOptions, options.zins);
+  } else {
+    dataAuszahlen = calculatAuszahlplan(options.auszahlen, options.zins);
+  }
 
   return (
     <div>
-      <Options options={options} onChange={updateOptions} />
-      <Chart data={data.data} />
-      <Summary summary={data.summary} options={options} />
+      <Options options={options} onChange={setOptions} />
+      <ChartAnsparen data={dataEinzahlen} />
+      <ChartAuszahlen data={dataAuszahlen} />
+      {/* <Summary summary={dataEinzahlen.summary} options={options} /> */}
     </div>
   );
 }
