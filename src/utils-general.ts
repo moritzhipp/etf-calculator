@@ -1,3 +1,5 @@
+import { ChartOptions } from "./utils-calculations";
+
 export function getDateInXYears(yearsInFuture: number): string {
   const currentDate = new Date();
   const futureYear = currentDate.getFullYear() + yearsInFuture;
@@ -23,3 +25,11 @@ export function formatEuro(amount: number | undefined): string {
     currency: "EUR",
   }).format(amount);
 }
+
+export const showAnsparOptions = (options: ChartOptions) =>
+  options.grundlagen.calcType === "ansparplan" ||
+  options.grundlagen.calcType === "combiplan";
+
+export const showAuszahlOptions = (options: ChartOptions) =>
+  options.grundlagen.calcType === "auszahlplan" ||
+  options.grundlagen.calcType === "combiplan";

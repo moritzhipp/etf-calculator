@@ -1,22 +1,33 @@
-import { ChartAuszOptions } from "@/utils-calculations";
+import { ChartOptions } from "@/utils-calculations";
 import { Input } from "@nextui-org/input";
 
 type Props = {
-  options: ChartAuszOptions;
+  options: ChartOptions;
   onChange: any;
 };
 
 export const OptionsAusz = (props: Props) => {
   const { options, onChange } = props;
-  const { rate, dauer, einmalbeitrag, steuerfreibetrag } = options;
+  const { rate, dauer, einmalbeitrag, steuerfreibetrag } = options.auszahlen;
 
   const handleFormChange = (e) => {
     onChange({ [e.target.id]: Number(e.target.value) });
   };
 
   return (
-    <form className="p-4" onChange={handleFormChange}>
-      <div className="grid grid-cols-3 gap-3">
+    <form onChange={handleFormChange}>
+      <h2 className="p-2">Auszahlphase</h2>
+
+      <div className="flex gap-3">
+        {options.grundlagen.calcType === "auszahlplan" && (
+          <Input
+            type="number"
+            value={einmalbeitrag}
+            label="Einmalbeitrag"
+            min="0"
+            id="einmalbeitrag"
+          />
+        )}
         <Input
           type="number"
           value={rate}
@@ -30,13 +41,6 @@ export const OptionsAusz = (props: Props) => {
           label="Dauer Auszahlung"
           min="0"
           id="dauer"
-        />
-        <Input
-          type="number"
-          value={einmalbeitrag}
-          label="Einmalbeitrag"
-          min="0"
-          id="einmalbeitrag"
         />
         <Input
           type="number"

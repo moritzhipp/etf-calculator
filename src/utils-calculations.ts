@@ -1,10 +1,18 @@
 import { getDateInXYears } from "./utils-general";
 
 export type ChartOptions = {
-  zins: number;
+  grundlagen: ChartGrundlagenOptions;
   einzahlen: ChartEinzOptions;
   auszahlen: ChartAuszOptions;
 };
+
+export type ChartGrundlagenOptions = {
+  zins: number;
+  inflation: number;
+  calcType: CalcType;
+};
+
+export type CalcType = "ansparplan" | "auszahlplan" | "combiplan";
 
 export type ChartEinzOptions = {
   einmalbeitrag: number;
@@ -14,7 +22,6 @@ export type ChartEinzOptions = {
 
 export type ChartAuszOptions = ChartEinzOptions & {
   steuerfreibetrag: number;
-  startYearsInFuture: number;
 };
 
 export type ChartData = {
@@ -42,11 +49,9 @@ export type ChartAuszSlice = {
   sum: number;
 };
 
-export function calculateAnsparplan(
-  input: ChartEinzOptions,
-  zins: number
-): ChartEinzSlice[] {
-  const { dauer, rate, einmalbeitrag } = input;
+export function calculateAnsparplan(options: ChartOptions): ChartEinzSlice[] {
+  const { dauer, rate, einmalbeitrag } = options.einzahlen;
+  const { zins } = options.grundlagen;
 
   let chartData = [];
 
@@ -86,18 +91,19 @@ export function calculateAnsparplan(
 }
 
 export function calculatAuszahlplan(
-  input: ChartAuszOptions,
-  zins: number
+  options: ChartOptions,
+  lastSum?: number
 ): ChartAuszSlice[] {
-  const { dauer, rate, steuerfreibetrag, einmalbeitrag, startYearsInFuture } =
-    input;
+  const { dauer, rate, steuerfreibetrag, einmalbeitrag } = options.auszahlen;
+  const { zins, calcType } = options.grundlagen;
+
+  let startYearsInFuture =
+    calcType === "combiplan" ? options.einzahlen.dauer : 0;
 
   let chartData = [];
-
+  const rateYearly = rate * 12;
   const percentage = zins / 100;
-
-  let currentSum = einmalbeitrag + rate;
-  let rateYearly = rate * 12;
+  let currentSum = lastSum || einmalbeitrag;
 
   let rendite = 0;
 

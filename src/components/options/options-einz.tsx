@@ -1,21 +1,22 @@
-import { ChartEinzOptions } from "@/utils-calculations";
+import { ChartOptions } from "@/utils-calculations";
 import { Input } from "@nextui-org/input";
 
 type Props = {
-  options: ChartEinzOptions;
+  options: ChartOptions;
   onChange: any;
 };
 
 export const OptionsEinz = (props: Props) => {
   const { options, onChange } = props;
-  const { einmalbeitrag, rate, dauer } = options;
+  const { einmalbeitrag, rate, dauer } = options.einzahlen;
 
   const handleFormChange = (e) => {
     onChange({ [e.target.id]: Number(e.target.value) });
   };
 
   return (
-    <form className="p-4" onChange={handleFormChange}>
+    <form onChange={handleFormChange}>
+      <h2 className="p-2">Auszahlphase</h2>
       <div className="grid grid-cols-3 gap-3">
         <Input
           type="number"

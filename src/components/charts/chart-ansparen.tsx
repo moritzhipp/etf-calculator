@@ -19,7 +19,6 @@ export const ChartAnsparen = ({ data }: { data: ChartEinzSlice[] }) => {
         <YAxis />
         <Tooltip animationDuration={1500} content={TooltipEinzahlung} />
         <CartesianGrid vertical={false} stroke="#444" strokeDasharray="2 10" />
-
         <Bar
           stackId="1"
           strokeWidth={1}
