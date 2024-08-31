@@ -13,30 +13,36 @@ import {
 
 export const ChartAnsparen = ({ data }: { data: ChartEinzSlice[] }) => {
   return (
-    <ResponsiveContainer width="100%" height="100%" className="p-2">
-      <ComposedChart data={data}>
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip animationDuration={1500} content={TooltipEinzahlung} />
-        <CartesianGrid vertical={false} stroke="#444" strokeDasharray="2 10" />
-        <Bar
-          stackId="1"
-          strokeWidth={1}
-          type="monotone"
-          dataKey="einzahlungSum"
-          stroke="#00f"
-        />
-        <Bar
-          stackId="1"
-          strokeWidth={1}
-          type="monotone"
-          dataKey="renditeSum"
-          stroke="#0f0"
-        />
+    <div className="relative h-full">
+      <ResponsiveContainer width="100%" height="100%" className="absolute">
+        <ComposedChart data={data}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip animationDuration={1500} content={TooltipEinzahlung} />
+          <CartesianGrid
+            vertical={false}
+            stroke="#444"
+            strokeDasharray="2 10"
+          />
+          <Bar
+            stackId="1"
+            strokeWidth={1}
+            type="monotone"
+            dataKey="einzahlungSum"
+            stroke="#00f"
+          />
+          <Bar
+            stackId="1"
+            strokeWidth={1}
+            type="monotone"
+            dataKey="renditeSum"
+            stroke="#0f0"
+          />
 
-        <Legend />
-      </ComposedChart>
-    </ResponsiveContainer>
+          <Legend />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

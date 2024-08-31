@@ -55,10 +55,14 @@ export default function IndexPage() {
   }
 
   return (
-    <div className="p-4">
-      <Options options={options} onChange={setOptions} />
-      {showAnsparOptions(options) && <ChartAnsparen data={dataEinzahlen} />}
-      {showAuszahlOptions(options) && <ChartAuszahlen data={dataAuszahlen} />}
+    <div className="flex  flex-col xl:flex-row gap-4 h-dvh">
+      <div className="flex flex-col gap-4">
+        <Options options={options} onChange={setOptions} />
+      </div>
+      <div className="flex flex-col flex-1 gap-4">
+        {showAnsparOptions(options) && <ChartAnsparen data={dataEinzahlen} />}
+        {showAuszahlOptions(options) && <ChartAuszahlen data={dataAuszahlen} />}
+      </div>
 
       {/* <Summary summary={dataEinzahlen.summary} options={options} /> */}
     </div>

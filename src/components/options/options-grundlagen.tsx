@@ -24,7 +24,7 @@ export const OptionsGrundlagen = (props: Props) => {
       <Tabs
         onSelectionChange={handleTypeChange}
         selectedKey={calcType}
-        className="col-span-2"
+        className="col-span-2 pb-4"
       >
         <Tab key="ansparplan" title="Ansparplan" />
         <Tab key="auszahlplan" title="Auszahlplan" />

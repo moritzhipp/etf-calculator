@@ -16,7 +16,7 @@ export const OptionsEinz = (props: Props) => {
 
   return (
     <form onChange={handleFormChange}>
-      <h2 className="p-2">Auszahlphase</h2>
+      <h2 className="p-2">Einzahlphase</h2>
       <div className="grid grid-cols-3 gap-3">
         <Input
           type="number"
