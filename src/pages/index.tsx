@@ -3,6 +3,8 @@ import { ChartAuszahlen } from "@/components/charts/chart-auszahlen";
 import { Options } from "@/components/options/options";
 import { SummaryAusz } from "@/components/summary/summary-ausz";
 import { SummaryEinz } from "@/components/summary/summary-einz";
+import { TableAuszahlen } from "@/components/tables/table-auszahlen";
+import { TableEinzahlen } from "@/components/tables/table-einzahlen";
 import {
   calculatAuszahlplan,
   calculateAnsparplan,
@@ -45,21 +47,21 @@ export default function IndexPage() {
   let lastEinzSlice: ChartEinzSlice;
   let lastAuszSlice: ChartAuszSlice;
 
+  const showEinzTable = false;
+  const showAuszTable = false;
+
   if (showAnsparOptions(options)) {
     dataEinzahlen = calculateAnsparplan(options);
     lastEinzSlice = getLastSlice(dataEinzahlen);
-    console.log("Ansparplan", dataEinzahlen);
   }
 
   if (calcType === "combiplan") {
     const lastSum = dataEinzahlen[dataEinzahlen.length - 1].sum;
     dataAuszahlen = calculatAuszahlplan(options, lastSum);
-    console.log("Auszahlplan", dataAuszahlen);
   }
 
   if (calcType === "auszahlplan") {
     dataAuszahlen = calculatAuszahlplan(options);
-    console.log("Auszahlplan", dataAuszahlen);
   }
 
   if (showAuszahlOptions(options)) {
@@ -84,9 +86,39 @@ export default function IndexPage() {
         </div>
       </div>
       <div className="flex flex-col flex-1 gap-4">
-        {showAnsparOptions(options) && <ChartAnsparen data={dataEinzahlen} />}
-        {showAuszahlOptions(options) && <ChartAuszahlen data={dataAuszahlen} />}
+        {showAnsparOptions(options) &&
+          DataVisEinzahlen({ data: dataEinzahlen, isTable: showEinzTable })}
+        {showAuszahlOptions(options) &&
+          DataVisAuszahlen({ data: dataAuszahlen, isTable: showAuszTable })}
       </div>
     </div>
   );
 }
+
+type VisAuszProps = {
+  data: ChartAuszSlice[];
+  isTable: boolean;
+};
+const DataVisAuszahlen = (props: VisAuszProps) => {
+  const { data, isTable } = props;
+
+  if (isTable) {
+    return <TableAuszahlen data={data} />;
+  } else {
+    return <ChartAuszahlen data={data} />;
+  }
+};
+
+type VisEinzProps = {
+  data: ChartEinzSlice[];
+  isTable: boolean;
+};
+const DataVisEinzahlen = (props: VisEinzProps) => {
+  const { data, isTable } = props;
+
+  if (isTable) {
+    return <TableEinzahlen data={data} />;
+  } else {
+    return <ChartAnsparen data={data} />;
+  }
+};

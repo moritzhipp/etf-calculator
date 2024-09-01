@@ -1,3 +1,4 @@
+import { themeColors } from "@/colors";
 import { ChartEinzSlice } from "@/utils-calculations";
 import { formatEuro } from "@/utils-general";
 import {
@@ -10,12 +11,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import colors from "tailwindcss/colors";
 
 export const ChartAuszahlen = ({ data }: { data: ChartEinzSlice[] }) => {
-  const sumColor = colors.blue;
-  const auszahlungColor = colors.red;
-  const renditeColor = colors.green;
   return (
     <div className="relative h-full">
       <ResponsiveContainer className="absolute" width="100%" height="100%">
@@ -29,23 +26,27 @@ export const ChartAuszahlen = ({ data }: { data: ChartEinzSlice[] }) => {
             strokeDasharray="2 10"
           />
           <Bar
+            stackId={1}
             strokeWidth={1}
             type="monotone"
-            dataKey="sum"
-            fill={sumColor[600]}
-          />
-          <Bar
-            strokeWidth={1}
-            type="monotone"
-            dataKey="rendite"
-            fill={renditeColor[600]}
+            dataKey="etfValue"
+            fill={themeColors.sum}
           />
 
           <Bar
+            stackId={1}
+            strokeWidth={1}
+            type="monotone"
+            dataKey="rendite"
+            fill={themeColors.rendite}
+          />
+
+          <Bar
+            stackId={2}
             strokeWidth={1}
             type="monotone"
             dataKey="auszahlung"
-            fill={auszahlungColor[600]}
+            fill={themeColors.auszahlung}
           />
           <Legend />
         </ComposedChart>
@@ -63,13 +64,15 @@ const TooltipAuszahlung = (props: PropsTooltip) => {
   const { active, payload } = props;
 
   if (!active || !payload || !props.payload[0]?.payload) return;
-  const { auszahlung, sum, rendite, date } = props.payload[0].payload;
+  const { auszahlung, sum, rendite, date, steuer } = props.payload[0].payload;
 
   return (
     <div className="grid grid-rows-2 gap-y-1 border-1 p-3 border-gray-600 backdrop-blur-md bg-gray-950/80  rounded-md shadow-md">
       <p className="col-span-2">
         <b>{date}</b>
       </p>
+      <div>Steuer</div>
+      <div className="text-right">{formatEuro(steuer)}</div>
       <div>Auszahlungen</div>
       <div className="text-right">{formatEuro(auszahlung)} </div>
       <div>Zinsgewinne</div>

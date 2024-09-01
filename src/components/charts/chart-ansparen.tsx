@@ -1,3 +1,4 @@
+import { themeColors } from "@/colors";
 import { ChartEinzSlice } from "@/utils-calculations";
 import { formatEuro } from "@/utils-general";
 import {
@@ -31,13 +32,13 @@ export const ChartAnsparen = ({ data }: { data: ChartEinzSlice[] }) => {
             stackId="1"
             type="monotone"
             dataKey="einzahlungSum"
-            fill={einzahlungColor[600]}
+            fill={themeColors.sum}
           />
           <Bar
             stackId="1"
             type="monotone"
             dataKey="renditeSum"
-            fill={renditeColor[600]}
+            fill={themeColors.rendite}
           />
           <Legend />
         </ComposedChart>
@@ -64,7 +65,9 @@ const TooltipEinzahlung = (props: PropsTooltip) => {
       <div className="text-right">{formatEuro(einzahlungSum)} </div>
       <div>Zinsgewinn gesamt</div>
       <div className="text-right">{formatEuro(renditeSum)}</div>
-      <div className="border-t-1 border-gray-600 mt-1 pt-1">Summe</div>
+      <div className="border-t-1 border-gray-600 mt-1 pt-1">
+        Summe Jahresende
+      </div>
       <div className="text-right  border-t-1 border-gray-600 mt-1 pt-1">
         {formatEuro(sum)}
       </div>

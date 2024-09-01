@@ -50,6 +50,7 @@ export const SummaryAusz = (props: Props) => {
         <span>Auszahlung monatlich</span>
         <span className="ml-auto">{formatEuro(rate)}</span>
       </div>
+      Hier dein geld ist x jahre vor ende aufgebraucht notiz
       <div className="grid grid-cols-2 mt-auto">
         <span>Summe am Ende</span>
         <span className="ml-auto font-bold">{formatEuro(endSum)}</span>

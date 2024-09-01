@@ -45,7 +45,9 @@ export type ChartEinzSlice = {
 export type ChartAuszSlice = {
   date: string;
   auszahlung: number;
+  steuer: number;
   rendite: number;
+  etfValue: number;
   sum: number;
 };
 
@@ -64,15 +66,15 @@ export function calculateAnsparplan(options: ChartOptions): ChartEinzSlice[] {
   let rendite = 0;
 
   // einzahlung
-  chartData.push({
-    date: getDateInXYears(0),
-    einzahlungSum: currentEinzahlungenSum,
-    renditeSum: currentRenditeSum,
-    rendite,
-    sum: currentSum,
-  });
+  // chartData.push({
+  //   date: getDateInXYears(1),
+  //   einzahlungSum: currentEinzahlungenSum,
+  //   renditeSum: currentRenditeSum,
+  //   rendite,
+  //   sum: currentSum,
+  // });
 
-  for (let i = 0; i < dauer - 1; i++) {
+  for (let i = 0; i < dauer; i++) {
     rendite = currentSum * percentagePerMonth;
     currentRenditeSum += rendite;
     currentEinzahlungenSum += rateYearly;
@@ -90,6 +92,10 @@ export function calculateAnsparplan(options: ChartOptions): ChartEinzSlice[] {
   return chartData;
 }
 
+// ich will 200 euro rente, also errechne ich, wie viel ich dafür abheben muss
+const kapitalertragsSteuer = 25;
+const solidaritätszuschlag = 5;
+
 export function calculatAuszahlplan(
   options: ChartOptions,
   lastSum?: number
@@ -100,22 +106,33 @@ export function calculatAuszahlplan(
   let startYearsInFuture =
     calcType === "combiplan" ? options.einzahlen.dauer : 0;
 
-  let chartData = [];
   const rateYearly = rate * 12;
   const percentage = zins / 100;
-  let currentSum = lastSum || einmalbeitrag;
 
+  let chartData = [];
+  let currentSum = lastSum || einmalbeitrag;
+  let taxAmount = 0;
   let rendite = 0;
+  let etfValue = 0;
+
+  if (rateYearly > 1000) {
+    taxAmount =
+      (rateYearly - steuerfreibetrag) *
+      ((kapitalertragsSteuer + solidaritätszuschlag) / 100);
+  }
 
   for (let i = 0; i < dauer; i++) {
     rendite = currentSum * percentage;
-    currentSum = currentSum + rendite - rateYearly;
-    if (currentSum < 0) break;
+    etfValue = currentSum - rateYearly;
+    currentSum = etfValue + rendite;
+    if (currentSum < rateYearly) break;
 
     chartData.push({
-      date: getDateInXYears(i + startYearsInFuture),
+      date: getDateInXYears(i + 1 + startYearsInFuture),
       auszahlung: rateYearly,
+      steuer: taxAmount,
       rendite,
+      etfValue,
       sum: currentSum,
     });
   }
