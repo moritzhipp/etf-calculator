@@ -1,6 +1,8 @@
 import { ChartAnsparen } from "@/components/charts/chart-ansparen";
 import { ChartAuszahlen } from "@/components/charts/chart-auszahlen";
 import { Options } from "@/components/options/options";
+import { SummaryAusz } from "@/components/summary/summary-ausz";
+import { SummaryEinz } from "@/components/summary/summary-einz";
 import {
   calculatAuszahlplan,
   calculateAnsparplan,
@@ -8,7 +10,11 @@ import {
   ChartEinzSlice,
   ChartOptions,
 } from "@/utils-calculations";
-import { showAnsparOptions, showAuszahlOptions } from "@/utils-general";
+import {
+  getLastSlice,
+  showAnsparOptions,
+  showAuszahlOptions,
+} from "@/utils-general";
 import { useState } from "react";
 
 const optionsDefault: ChartOptions = {
@@ -36,17 +42,19 @@ export default function IndexPage() {
 
   let dataEinzahlen: ChartEinzSlice[] = [];
   let dataAuszahlen: ChartAuszSlice[] = [];
+  let lastEinzSlice: ChartEinzSlice;
+  let lastAuszSlice: ChartAuszSlice;
 
-  if (calcType === "ansparplan") {
+  if (showAnsparOptions(options)) {
     dataEinzahlen = calculateAnsparplan(options);
+    lastEinzSlice = getLastSlice(dataEinzahlen);
     console.log("Ansparplan", dataEinzahlen);
   }
 
   if (calcType === "combiplan") {
-    dataEinzahlen = calculateAnsparplan(options);
     const lastSum = dataEinzahlen[dataEinzahlen.length - 1].sum;
     dataAuszahlen = calculatAuszahlplan(options, lastSum);
-    console.log("Combiplan", { dataEinzahlen, dataAuszahlen });
+    console.log("Auszahlplan", dataAuszahlen);
   }
 
   if (calcType === "auszahlplan") {
@@ -54,17 +62,31 @@ export default function IndexPage() {
     console.log("Auszahlplan", dataAuszahlen);
   }
 
+  if (showAuszahlOptions(options)) {
+    lastAuszSlice = getLastSlice(dataAuszahlen);
+  }
+
   return (
-    <div className="flex  flex-col xl:flex-row gap-4 h-dvh">
-      <div className="flex flex-col gap-4">
+    <div className="flex  flex-col xl:flex-row gap-4 h-dvh p-4">
+      <div className="flex flex-col gap-4 xl:w-1/4">
         <Options options={options} onChange={setOptions} />
+        <div className="flex flex-row xl:flex-col  gap-4 ">
+          {showAnsparOptions(options) && (
+            <SummaryEinz options={options} lastSlice={lastEinzSlice} />
+          )}
+          {showAuszahlOptions(options) && (
+            <SummaryAusz
+              options={options}
+              lastEinzSlice={lastEinzSlice}
+              lastAuszSlice={lastAuszSlice}
+            />
+          )}
+        </div>
       </div>
       <div className="flex flex-col flex-1 gap-4">
         {showAnsparOptions(options) && <ChartAnsparen data={dataEinzahlen} />}
         {showAuszahlOptions(options) && <ChartAuszahlen data={dataAuszahlen} />}
       </div>
-
-      {/* <Summary summary={dataEinzahlen.summary} options={options} /> */}
     </div>
   );
 }

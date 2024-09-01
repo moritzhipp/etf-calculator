@@ -110,6 +110,7 @@ export function calculatAuszahlplan(
   for (let i = 0; i < dauer; i++) {
     rendite = currentSum * percentage;
     currentSum = currentSum + rendite - rateYearly;
+    if (currentSum < 0) break;
 
     chartData.push({
       date: getDateInXYears(i + startYearsInFuture),

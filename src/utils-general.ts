@@ -26,6 +26,8 @@ export function formatEuro(amount: number | undefined): string {
   }).format(amount);
 }
 
+export const getLastSlice = <T>(list: T[]) => list[list.length - 1];
+
 export const showAnsparOptions = (options: ChartOptions) =>
   options.grundlagen.calcType === "ansparplan" ||
   options.grundlagen.calcType === "combiplan";

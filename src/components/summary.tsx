@@ -4,7 +4,7 @@ import { Divider } from "@nextui-org/divider";
 
 export const Summary = (props) => {
   const { summary, options } = props;
-  const { rateAusz, rateEinz, zins, einmalbeitrag, dauerAusz } = options;
+  const { rateEinz, zins, einmalbeitrag, dauerAusz } = options;
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4">

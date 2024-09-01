@@ -24,6 +24,7 @@ export const OptionsEinz = (props: Props) => {
           label="Einmaliger Betrag"
           min="0"
           id="einmalbeitrag"
+          variant="bordered"
         />
         <Input
           type="number"
@@ -31,6 +32,7 @@ export const OptionsEinz = (props: Props) => {
           label="Rate Einzahlung"
           min="0"
           id="rate"
+          variant="bordered"
         />
         <Input
           type="number"
@@ -38,6 +40,7 @@ export const OptionsEinz = (props: Props) => {
           label="Dauer Einzahlung"
           min="0"
           id="dauer"
+          variant="bordered"
         />
       </div>
     </form>

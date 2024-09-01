@@ -26,6 +26,7 @@ export const OptionsAusz = (props: Props) => {
             label="Einmalbeitrag"
             min="0"
             id="einmalbeitrag"
+            variant="bordered"
           />
         )}
         <Input
@@ -34,6 +35,7 @@ export const OptionsAusz = (props: Props) => {
           label="Rate Auszahlung"
           min="1"
           id="rate"
+          variant="bordered"
         />
         <Input
           type="number"
@@ -41,6 +43,7 @@ export const OptionsAusz = (props: Props) => {
           label="Dauer Auszahlung"
           min="0"
           id="dauer"
+          variant="bordered"
         />
         <Input
           type="number"
@@ -48,6 +51,7 @@ export const OptionsAusz = (props: Props) => {
           label="Steuerfreibetrag"
           min="0"
           id="steuerfreibetrag"
+          variant="bordered"
         />
       </div>
     </form>

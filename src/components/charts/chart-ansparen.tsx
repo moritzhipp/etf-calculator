@@ -10,8 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import colors from "tailwindcss/colors";
 
 export const ChartAnsparen = ({ data }: { data: ChartEinzSlice[] }) => {
+  const einzahlungColor = colors.purple;
+  const renditeColor = colors.green;
   return (
     <div className="relative h-full">
       <ResponsiveContainer width="100%" height="100%" className="absolute">
@@ -26,19 +29,16 @@ export const ChartAnsparen = ({ data }: { data: ChartEinzSlice[] }) => {
           />
           <Bar
             stackId="1"
-            strokeWidth={1}
             type="monotone"
             dataKey="einzahlungSum"
-            stroke="#00f"
+            fill={einzahlungColor[600]}
           />
           <Bar
             stackId="1"
-            strokeWidth={1}
             type="monotone"
             dataKey="renditeSum"
-            stroke="#0f0"
+            fill={renditeColor[600]}
           />
-
           <Legend />
         </ComposedChart>
       </ResponsiveContainer>
@@ -56,11 +56,11 @@ const TooltipEinzahlung = (props: PropsTooltip) => {
   if (!active || !payload || !props.payload[0]?.payload) return;
   const { einzahlungSum, sum, renditeSum, date } = props.payload[0].payload;
   return (
-    <div className="grid grid-rows-2 gap-y-1 border-1 p-3 border-gray-600 backdrop-blur-md rounded-md shadow-md">
+    <div className="grid grid-rows-2 gap-y-1 border-1 p-3 border-gray-600 backdrop-blur-md bg-gray-950/80 backdrop-brightness-20 rounded-md shadow-md">
       <p className="col-span-2">
         <b>{date}</b>
       </p>
-      <div>Eingezahlt</div>
+      <div>Einzahlung gesamt</div>
       <div className="text-right">{formatEuro(einzahlungSum)} </div>
       <div>Zinsgewinn gesamt</div>
       <div className="text-right">{formatEuro(renditeSum)}</div>

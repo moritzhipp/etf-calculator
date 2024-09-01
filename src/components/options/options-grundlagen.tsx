@@ -25,6 +25,7 @@ export const OptionsGrundlagen = (props: Props) => {
         onSelectionChange={handleTypeChange}
         selectedKey={calcType}
         className="col-span-2 pb-4"
+        variant="bordered"
       >
         <Tab key="ansparplan" title="Ansparplan" />
         <Tab key="auszahlplan" title="Auszahlplan" />
@@ -32,13 +33,21 @@ export const OptionsGrundlagen = (props: Props) => {
       </Tabs>
       <h2 className="p-2">Grundlagen</h2>
       <div className="grid grid-cols-2 gap-3">
-        <Input type="number" value={zins} label="Zinssatz" min="1" id="zins" />
+        <Input
+          type="number"
+          value={zins}
+          label="Zinssatz"
+          min="1"
+          id="zins"
+          variant="bordered"
+        />
         <Input
           type="number"
           value={inflation}
           label="Inflation"
           min="1"
           id="inflation"
+          variant="bordered"
         />
       </div>
     </form>

@@ -26,7 +26,6 @@ export const Options = (props: Props) => {
   };
 
   const changeGrund = (grund: ChartGrundlagenOptions) => {
-    console.log(grund);
     onChange({ ...options, grundlagen: { ...options.grundlagen, ...grund } });
   };
 
